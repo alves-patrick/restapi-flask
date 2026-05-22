@@ -1,20 +1,9 @@
-from flask import Flask 
-from flask_restful import Resource, Api, reqparse
-from mongoengine import connect, Document, StringField, EmailField, DateTimeField
+from flask import jsonify
+from flask_restful import Resource, reqparse
 from mongoengine import NotUniqueError
+from .model import UserModel
 import re
-
-app = Flask(__name__)
-api = Api(app)
-
-# Seguindo a doc: conexão direta
-connect(
-    db='users',
-    port=27017,
-    host='mongodb',
-    username='admin',
-    password='admin'
-)
+import json
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument('first_name', 
@@ -45,18 +34,18 @@ _user_parser.add_argument('birth_date',
 
 
 # Seguindo a doc: definindo o modelo sem usar "db." na frente de nada
-class UserModel(Document):
-    cpf = StringField(required=True, unique=True)
-    first_name = StringField(require=True)
-    last_name = StringField(required=True)
-    email = EmailField(required=True)
-    birth_date = DateTimeField(required=True)
 
 class Users(Resource):
     def get(self):
-        return {"message": "user1"}
-        #return UserModel.objects().to_json()
-        #return json.loads(usuarios_json)
+        #return jsonify(UserModel.objects())
+        # 1. Pega os dados do banco e converte para texto
+        dados_em_texto = UserModel.objects().to_json()
+        
+        # 2. Transforma o texto em uma lista normal do Python
+        lista_de_usuarios = json.loads(dados_em_texto)
+        
+        # 3. Agora você pode usar o jsonify perfeitamente!
+        return jsonify(lista_de_usuarios)
         
 
 class User(Resource):
@@ -104,10 +93,20 @@ class User(Resource):
 
 
     def get(self, cpf):
-        return {"message": "CPF"}
+      # 1. Pega os dados do Mongo e converte pra texto
+        dados_em_texto = UserModel.objects(cpf=cpf).to_json()
+        
+        # 2. Converte pra lista do Python (se não achar, vira uma lista vazia [])
+        usuario_lista = json.loads(dados_em_texto)
+        
+        # 3. Como mostrar a mensagem se não existir:
+        # Se a lista estiver vazia (not usuario_lista), cai nesse if!
+        if not usuario_lista:
+            return {"message": "User does not exist in database!"}, 404
+            
+        # 4. Se chegou aqui, é porque achou! Devolve o primeiro usuário da lista
+        return jsonify(usuario_lista[0])
 
-api.add_resource(Users, '/users')
-api.add_resource(User, '/user', '/user/<string:cpf>')
 
-if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+
+ 
