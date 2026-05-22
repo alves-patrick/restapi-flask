@@ -1,5 +1,5 @@
 from flask import Flask 
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 # Seguindo a doc: importando tudo direto da biblioteca!
 from mongoengine import connect, Document, StringField, EmailField, DateTimeField
 
@@ -15,6 +15,34 @@ connect(
     password='admin'
 )
 
+_user_parser = reqparse.RequestParser()
+_user_parser.add_argument('first_name', 
+                          type=str,
+                          required=True,
+                          help="This field cannot be blank."
+                          )
+_user_parser.add_argument('last_name', 
+                          type=str,
+                          required=True,
+                          help="This field cannot be blank."
+                          )
+_user_parser.add_argument('cpf', 
+                          type=str,
+                          required=True,
+                          help="This field cannot be blank."
+                          )
+_user_parser.add_argument('email', 
+                          type=str,
+                          required=True,
+                          help="This field cannot be blank."
+                          )
+_user_parser.add_argument('birth_date', 
+                          type=str,
+                          required=True,
+                          help="This field cannot be blank."
+                          )
+
+
 # Seguindo a doc: definindo o modelo sem usar "db." na frente de nada
 class UserModel(Document):
     cpf = StringField(required=True, unique=True)
@@ -25,13 +53,15 @@ class UserModel(Document):
 
 class Users(Resource):
     def get(self):
-        return UserModel.objects().to_json()
-        return json.loads(usuarios_json)
-        #return {"message": "user1"}
+        return {"message": "user1"}
+        #return UserModel.objects().to_json()
+        #return json.loads(usuarios_json)
+        
 
 class User(Resource):
     def post(self):
-        return {"message": "teste"}
+        data = _user_parser.parse_args()
+        UserModel(**data).save()#{"message": "teste"}
     
     def get(self, cpf):
         return {"message": "CPF"}
