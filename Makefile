@@ -1,4 +1,4 @@
-APP = restapi
+APP = rest-apii web
 
 test: 
 	@flake8 . --exclude .venv
@@ -9,5 +9,5 @@ compose:
 
 heroku:
   @heroku container:login
-  @heroku container:push -a rest-apii web
-  @heroku container:release -a rest-apii web
+  @heroku container:push -a $(APP) web
+  @heroku container:release -a $(APP) web
