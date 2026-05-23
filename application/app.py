@@ -6,50 +6,42 @@ import re
 import json
 
 _user_parser = reqparse.RequestParser()
-_user_parser.add_argument('first_name', 
+_user_parser.add_argument('first_name',
                           type=str,
                           required=True,
                           help="This field cannot be blank."
                           )
-_user_parser.add_argument('last_name', 
+_user_parser.add_argument('last_name',
                           type=str,
                           required=True,
                           help="This field cannot be blank."
                           )
-_user_parser.add_argument('cpf', 
+_user_parser.add_argument('cpf',
                           type=str,
                           required=True,
                           help="This field cannot be blank."
                           )
-_user_parser.add_argument('email', 
+_user_parser.add_argument('email',
                           type=str,
                           required=True,
                           help="This field cannot be blank."
                           )
-_user_parser.add_argument('birth_date', 
+_user_parser.add_argument('birth_date',
                           type=str,
                           required=True,
                           help="This field cannot be blank."
                           )
 
-
-# Seguindo a doc: definindo o modelo sem usar "db." na frente de nada
 
 class Users(Resource):
     def get(self):
+        usuarios = UserModel.objects().to_json()
+        return jsonify(json.loads(usuarios))
         #return jsonify(UserModel.objects())
-        # 1. Pega os dados do banco e converte para texto
-        dados_em_texto = UserModel.objects().to_json()
-        
-        # 2. Transforma o texto em uma lista normal do Python
-        lista_de_usuarios = json.loads(dados_em_texto)
-        
-        # 3. Agora você pode usar o jsonify perfeitamente!
-        return jsonify(lista_de_usuarios)
-        
+
 
 class User(Resource):
-      
+
     def validate_cpf(self, cpf):
 
         # Has the correct mask?
@@ -78,35 +70,23 @@ class User(Resource):
             return False
 
         return True
-    
+
     def post(self):
         data = _user_parser.parse_args()
-            
-        if not self.validate_cpf(data["cpf"]):
-                return {"message": "CPF is invalid!"}, 400
 
-        try:    
+        if not self.validate_cpf(data["cpf"]):
+            return {"message": "CPF is invalid!"}, 400
+
+        try:
             response = UserModel(**data).save()
-            return {"message": "User %s sucessfully created!" % response.id}
+            return {"message": "User %s successfully created!" % response.id}
         except NotUniqueError:
             return {"message": "CPF already exists in database!"}, 400
 
-
     def get(self, cpf):
-      # 1. Pega os dados do Mongo e converte pra texto
-        dados_em_texto = UserModel.objects(cpf=cpf).to_json()
-        
-        # 2. Converte pra lista do Python (se não achar, vira uma lista vazia [])
-        usuario_lista = json.loads(dados_em_texto)
-        
-        # 3. Como mostrar a mensagem se não existir:
-        # Se a lista estiver vazia (not usuario_lista), cai nesse if!
-        if not usuario_lista:
-            return {"message": "User does not exist in database!"}, 404
-            
-        # 4. Se chegou aqui, é porque achou! Devolve o primeiro usuário da lista
-        return jsonify(usuario_lista[0])
+        response = UserModel.objects(cpf=cpf)
 
+        if response:
+            return jsonify(response)
 
-
- 
+        return {"message": "User does not exist in database!"}, 400
