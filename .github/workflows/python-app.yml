@@ -5,19 +5,18 @@ name: Deploy Heroku
 on:
   push:
     branches: [ "main" ]
-  
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: install dependencies
       run: pip install -r requirements.txt
+      
     - name: Deploy to heroku 
-    - run: make heroku
+      run: make heroku            
       env:
-        HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
-  
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}  
