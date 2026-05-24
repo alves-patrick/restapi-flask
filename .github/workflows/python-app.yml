@@ -21,7 +21,3 @@ jobs:
       env:
         HEROKU_API_KEY: ${{secret.HEROKU_API_KEY}}
     
-    
-
-      s
-    
