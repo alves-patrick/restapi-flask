@@ -7,3 +7,7 @@ class UserModel(Document):
     last_name = StringField(required=True)
     email = EmailField(required=True)
     birth_date = DateTimeField(required=True)
+
+
+class HealthCheckModel(Document):
+    status = StringField(required=True)
