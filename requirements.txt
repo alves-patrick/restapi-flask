@@ -1,7 +1,6 @@
 aniso8601
 bandit
 black
-blinker
 click
 dnspython
 email-validator
@@ -35,7 +34,6 @@ pyflakes
 Pygments
 pymongo
 pytest
-pytokens
 pytz
 PyYAML
 rich
