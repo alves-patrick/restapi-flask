@@ -1,7 +1,6 @@
 from mongoengine import Document, StringField, EmailField, DateTimeField
 
 
-
 class UserModel(Document):
     cpf = StringField(required=True, unique=True)
     first_name = StringField(required=True)

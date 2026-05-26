@@ -1,7 +1,7 @@
 APP = rest-apii web
 
 test: 
-	@flake8 . --exclude .venv
+	@flake8 . --exclude .venv --max-line-length=88
 
 compose:
 	@docker compose build
