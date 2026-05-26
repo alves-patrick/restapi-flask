@@ -1,4 +1,5 @@
 import os
+import mongomock
 
 
 class DevConfig:
@@ -17,17 +18,17 @@ class ProdConfig:
     MONGODB_DB = os.getenv("MONGODB_DB")
 
     MONGODB_SETTINGS = {
-        "host": "mongodb+srv://%s:%s@%s/%s?appName=Cluster0"
-        % (MONGODB_USER, MONGODB_PASSWORD, MONGODB_HOST, MONGODB_DB)
+        "host": (
+            f"mongodb+srv://{MONGODB_USER}:{MONGODB_PASSWORD}@"
+            f"{MONGODB_HOST}/{MONGODB_DB}?appName=Cluster0"
+        )
     }
 
 
 class MockConfig:
     TESTING = True
     MONGODB_SETTINGS = {
-        "db": "users_test_db",
-        "host": "localhost",
-        "port": 27017,
-        "username": "admin",
-        "password": "admin",
+        "db": "mongoenginetest",
+        "host": "mongodb://localhost",
+        "mongo_client_class": mongomock.MongoClient,
     }
