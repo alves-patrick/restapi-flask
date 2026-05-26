@@ -1,7 +1,8 @@
 APP = rest-apii web
 
-test: 
-	@flake8 . --exclude .venv --max-line-length=88
+test:
+	flake8 . --exclude .venv --max-line-length=88
+	.venv/bin/pytest -v
 
 compose:
 	@docker compose build

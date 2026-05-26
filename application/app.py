@@ -33,7 +33,6 @@ class Users(Resource):
 class User(Resource):
 
     def validate_cpf(self, cpf):
-
         # Has the correct mask?
         if not re.match(r"\d{3}\.\d{3}\.\d{3}-\d{2}", cpf):
             return False
@@ -72,15 +71,9 @@ class User(Resource):
             return {"message": "CPF already exists in database!"}, 400
 
     def get(self, cpf):
-        # .first() busca o documento real ou devolve None se não achar nada
         user = UserModel.objects(cpf=cpf).first()
 
         if user:
-            # O .to_json() do MongoEngine converte os dados do banco
-            # (incluindo ObjectId) perfeitamente.
-            # Usamos o json.loads para transformar em dicionário.
-            import json
-
             return json.loads(user.to_json()), 200
 
         return {"message": "User does not exist in database!"}, 400
@@ -95,5 +88,15 @@ class User(Resource):
         if response:
             response.update(**data)
             return {"message": "User updated successfully!"}, 200
+        else:
+            return {"message": "User does not exist in database!"}, 400
+
+    def delete(self, cpf):
+        # Agora sim! Alinhado corretamente dentro da classe User
+        response = UserModel.objects(cpf=cpf).first()
+
+        if response:
+            response.delete()  # Deleta o registro do banco de verdade
+            return {"message": "User deleted!"}, 200
         else:
             return {"message": "User does not exist in database!"}, 400
