@@ -1,92 +1,93 @@
-  Flask REST API: User Management & DevOps Ecosystem 🚀
+# 🚀 Full-Cycle DevOps: Flask REST API & Cloud Infrastructure
 
-  Esta é uma API REST robusta para gerenciamento de usuários, desenvolvida em Python/Flask e integrada a um ecossistema moderno de DevOps. O
-  projeto demonstra um ciclo de vida completo, desde o desenvolvimento local com Docker até o deploy escalonável em Kubernetes na AWS.
+Este projeto é um laboratório de engenharia de software e DevOps de alta performance. Ele demonstra o ciclo de vida completo de uma aplicação, desde o desenvolvimento local padronizado com **Docker** até a orquestração escalonável em **Kubernetes**, visando um ambiente de produção resiliente na **AWS**.
 
-  🏗️ Arquitetura e Stack Tecnológica
+---
 
-  Core da Aplicação
-   * Python 3.14+: Linguagem base.
-   * Flask & Flask-RESTful: Framework leve para APIs escalonáveis.
-   * MongoEngine: ODM para modelagem e interação com MongoDB.
-   * MongoDB: Banco de dados NoSQL para persistência flexível.
+## 🛠️ Stack Tecnológica
 
-  Infraestrutura & DevOps (Roadmap de Deploy)
-   * AWS (Amazon Web Services): Cloud provider alvo para produção.
-   * Kubernetes (EKS) & Helm: Orquestração de containers e gerenciamento de pacotes.
-   * Terraform: Infraestrutura como Código (IaC) para provisionamento de recursos AWS (VPC, EKS, etc).
-   * Ansible: Automação de configuração e provisionamento de instâncias.
-   * DNS (Route 53 & External DNS): Gerenciamento automatizado de domínios dentro do cluster K8s.
-   * GitHub Actions: Pipeline de CI/CD para testes automatizados e deploy contínuo.
-   * Docker & Docker Compose: Padronização do ambiente de desenvolvimento.
+| Camada | Tecnologia |
+| :--- | :--- |
+| **Backend** | Python 3.14+, Flask, Flask-RESTful |
+| **Banco de Dados** | MongoDB, MongoEngine (ODM) |
+| **Containerização** | Docker, Docker Compose |
+| **Orquestração** | Kubernetes (Kind), Helm |
+| **Qualidade** | Pytest, Flake8, GitHub Actions |
+| **Roadmap Cloud** | Terraform, Ansible, AWS (EKS, Route 53) |
 
-  ---
+---
 
-  🗂️ Estrutura do Projeto
+## ✨ Funcionalidades Principais
 
-    1 .
-    2 ├── application/            # Código fonte da API
-    3 │   ├── app.py              # Definição de rotas e lógica de recursos (CRUD)
-    4 │   ├── model.py            # Schemas de dados (MongoEngine)
-    5 │   ├── db.py               # Inicialização da conexão com o banco
-    6 │   └── tests/              # Testes unitários e de integração
-    7 ├── kubernetes/             # Manifestos K8s e Helm Charts
-    8 │   ├── charts/mongodb/     # Chart Helm customizado para o MongoDB
-    9 │   └── config/             # Configurações do Cluster Kind (Local)
-   10 ├── .github/workflows/      # Automação de CI/CD (GitHub Actions)
-   11 ├── terraform/              # [Em breve] Módulos de Infraestrutura AWS
-   12 ├── ansible/                # [Em breve] Playbooks de configuração
-   13 ├── Dockerfile              # Definição da imagem da aplicação
-   14 └── docker-compose.yml      # Orquestração local API + DB
+- **CRUD Completo de Usuários:** Gerenciamento eficiente com persistência em NoSQL.
+- **Validação de Negócio:** Algoritmo robusto para validação de CPF.
+- **Healthcheck Dinâmico:** Monitoramento de saúde da API e conectividade com o banco.
+- **Arquitetura Escalável:** Preparado para rodar em clusters de alta disponibilidade.
+- **Infra-as-Code (IaC):** Manifestos Kubernetes prontos para Ingress e Service.
 
-  ---
+---
 
-  🚀 Como Executar
+## 🚀 Como Executar o Projeto
 
-  1. Desenvolvimento Local (Docker Compose)
-  A maneira mais rápida de subir o ambiente completo (API + MongoDB):
+### 1. Desenvolvimento Local (Docker Compose)
+Ideal para desenvolvimento rápido e debug da API.
+```bash
+# Sobe a API e o MongoDB automaticamente
+make compose
+```
+📍 Acesse em: `http://localhost:5000`
 
-   1 docker-compose up --build
-  A API estará disponível em http://localhost:5000.
+### 2. Ambiente Kubernetes Local (Kind + Ingress)
+Simula um ambiente de produção com roteamento via Ingress.
+```bash
+# Cria o cluster, instala o Ingress Nginx e o Helm Chart do MongoDB
+make setup-dev
 
-  2. Kubernetes Local (Kind + Helm)
-  O projeto inclui um Makefile para automatizar a criação de um ambiente K8s local idêntico ao de produção:
+# Aplica os manifestos da aplicação
+kubectl apply -f kubernetes/manifests/
+```
+📍 Teste o roteamento (Ingress):
+```bash
+curl localhost/users -H "Host: api.localhost.com"
+```
 
-   1 # Cria o cluster Kind, instala Ingress Nginx e o Helm Chart do MongoDB
-   2 make setup-dev
+---
 
-  ---
+## 🧪 Qualidade e Testes
 
-  🛣️ Endpoints da API
+O projeto segue práticas rigorosas de testes para garantir a estabilidade.
+```bash
+# Executa a suíte de testes (Pytest + Mongomock)
+make test
+```
 
-  ┌────────┬──────────────┬──────────────────────────────────────────────────┐
-  │ Método │ Endpoint     │ Descrição                                        │
-  ├────────┼──────────────┼──────────────────────────────────────────────────┤
-  │ GET    │ /users       │ Lista todos os usuários cadastrados.             │
-  │ GET    │ /user/<cpf>  │ Busca um usuário específico pelo CPF.            │
-  │ POST   │ /user        │ Cria um novo usuário (Validação de CPF inclusa). │
-  │ PATCH  │ /user        │ Atualiza dados de um usuário existente.          │
-  │ DELETE │ /user/<cpf>  │ Remove um usuário do sistema.                    │
-  │ GET    │ /healthcheck │ Verifica o status de saúde da API e Banco.       │
-  └────────┴──────────────┴──────────────────────────────────────────────────┘
-  ---
+---
 
-  ⚙️ Pipeline de CI/CD
-  Atualmente, o projeto utiliza GitHub Actions para:
-   1. Linting: Verificação de estilo com flake8.
-   2. Testes: Execução de testes automatizados com pytest e mongomock.
-   3. Build & Push: (Em transição para AWS ECR) Preparação da imagem Docker.
-   4. Deploy: (Em transição para AWS EKS via Helm).
+## 🗺️ Roadmap de Evolução (Próximos Passos)
 
-  ---
+O projeto está em constante evolução. Os próximos módulos incluem:
 
-  🛠️ Próximos Passos (Roadmap)
-   - [ ] Finalizar módulos Terraform para provisionamento do cluster EKS e VPC.
-   - [ ] Implementar playbooks Ansible para hardening e configuração de nodes.
-   - [ ] Integrar External DNS com Route 53 para exposição automática de serviços.
-   - [ ] Configurar Secrets Management (AWS Secrets Manager ou HashiCorp Vault).
-   - [ ] Implementar monitoramento com Prometheus/Grafana via Helm Charts.
+- [ ] **Produção com Helm:** Criação de Charts customizados para deploy simplificado.
+- [ ] **IaC com Terraform:** Provisionamento automatizado de VPC e Cluster EKS na AWS.
+- [ ] **Automação com Ansible:** Hardening de instâncias e configuração de workers.
+- [ ] **Cloud Networking:** Integração de **Route 53** com **External DNS** para automação de domínios.
+- [ ] **Observabilidade:** Implementação de stack Prometheus & Grafana.
 
-  ---
-  Este projeto é mantido como um laboratório de engenharia de software e DevOps de alta performance.
+---
 
+## 📖 Endpoints da API
+
+| Método | Rota | Descrição |
+| :--- | :--- | :--- |
+| `GET` | `/users` | Lista todos os usuários. |
+| `GET` | `/user/<cpf>` | Detalhes de um usuário específico. |
+| `POST` | `/user` | Cadastro de novo usuário. |
+| `PATCH` | `/user` | Atualização de dados cadastrais. |
+| `DELETE` | `/user/<cpf>` | Remoção de usuário do sistema. |
+| `GET` | `/health` | Status de saúde da aplicação. |
+
+---
+
+## 🤝 Contato
+
+Desenvolvido por **Patrick Alves** - *Focado em soluções escalonáveis e cultura DevOps.*

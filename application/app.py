@@ -80,7 +80,10 @@ class User(Resource):
         except NotUniqueError:
             return {"message": "CPF already exists in database!"}, 400
 
-    def get(self, cpf):
+    def get(self, cpf=None):
+        if cpf is None:
+            return {"message": "Please provide a CPF to search for a user."}, 400
+
         user = UserModel.objects(cpf=cpf).first()
 
         if user:
