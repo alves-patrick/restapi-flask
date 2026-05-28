@@ -24,6 +24,7 @@ class ProdConfig:
         "password": MONGODB_PASSWORD,
     }
 
+
 class MockConfig:
     TESTING = True
     MONGODB_SETTINGS = {
