@@ -18,12 +18,11 @@ class ProdConfig:
     MONGODB_DB = os.getenv("MONGODB_DB")
 
     MONGODB_SETTINGS = {
-        "host": (
-            f"mongodb+srv://{MONGODB_USER}:{MONGODB_PASSWORD}@"
-            f"{MONGODB_HOST}/{MONGODB_DB}?appName=Cluster0"
-        )
+        "db": MONGODB_DB,
+        "host": MONGODB_HOST,
+        "username": MONGODB_USER,
+        "password": MONGODB_PASSWORD,
     }
-
 
 class MockConfig:
     TESTING = True

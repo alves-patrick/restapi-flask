@@ -1,38 +1,93 @@
-# REST API Flask 🚀
+# 🚀 Full-Cycle DevOps: Flask REST API & Cloud Infrastructure
 
-Uma API REST completa e robusta desenvolvida em Python com o ecossistema Flask, utilizando **MongoEngine** para persistência de dados no MongoDB, conteinização com **Docker / Docker Compose**, e uma esteira automatizada de CI/CD via **GitHub Actions** integrada ao **Heroku Container Registry**.
-
-O projeto foi desenhado seguindo as melhores práticas de desenvolvimento de software (Twelve-Factor App), isolando variáveis de ambiente e permitindo 
-que a stack mude de banco local (Docker) para nuvem (MongoDB Atlas) de forma totalmente transparente.
+Este projeto é um laboratório de engenharia de software e DevOps de alta performance. Ele demonstra o ciclo de vida completo de uma aplicação, desde o desenvolvimento local padronizado com **Docker** até a orquestração escalonável em **Kubernetes**, visando um ambiente de produção resiliente na **AWS**.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Stack Tecnológica
 
-- **Python 3.14+**
-- **Flask** & **Flask-RESTful** (Arquitetura baseada em Recursos para endpoints limpos)
-- **MongoEngine** (ODM para mapeamento de objetos e schemas do MongoDB)
-- **Docker** & **Docker Compose** (Padronização e isolamento do ambiente de desenvolvimento)
-- **GitHub Actions** (Automação de testes e Deploy Contínuo)
-- **Heroku Container Registry** (Hospedagem baseada em containers na nuvem)
+| Camada | Tecnologia |
+| :--- | :--- |
+| **Backend** | Python 3.14+, Flask, Flask-RESTful |
+| **Banco de Dados** | MongoDB, MongoEngine (ODM) |
+| **Containerização** | Docker, Docker Compose |
+| **Orquestração** | Kubernetes (Kind), Helm |
+| **Qualidade** | Pytest, Flake8, GitHub Actions |
+| **Roadmap Cloud** | Terraform, Ansible, AWS (EKS, Route 53) |
 
 ---
 
-## 🗂️ Estrutura do Projeto
+## ✨ Funcionalidades Principais
 
-```text
-.
-├── application/            # Módulo principal da aplicação Flask
-│   ├── __init__.py         # Inicialização do App, API e Banco de Dados
-│   ├── app.py              # Definição das rotas e lógica dos Recursos (Resources)
-│   ├── db.py               # Configuração e inicialização do ODM MongoEngine
-│   └── models.py           # Modelos de dados / Schemas do MongoDB
-├── .github/
-│   └── workflows/
-│       └── python-app.yml  # Esteira de CI/CD (GitHub Actions)
-├── config.py               # Gerenciamento de ambientes (DevConfig, ProdConfig)
-├── Dockerfile              # Instruções de build da imagem Docker (Alpine Linux)
-├── docker-compose.yml      # Orquestração do container da API + Banco de Dados local
-├── Makefile                # Atalhos de comandos para produtividade no terminal
-├── requirements.txt        # Dependências do projeto Python
-└── wsgi.py                 # Ponto de entrada para servidores WSGI (Gunicorn)
+- **CRUD Completo de Usuários:** Gerenciamento eficiente com persistência em NoSQL.
+- **Validação de Negócio:** Algoritmo robusto para validação de CPF.
+- **Healthcheck Dinâmico:** Monitoramento de saúde da API e conectividade com o banco.
+- **Arquitetura Escalável:** Preparado para rodar em clusters de alta disponibilidade.
+- **Infra-as-Code (IaC):** Manifestos Kubernetes prontos para Ingress e Service.
+
+---
+
+## 🚀 Como Executar o Projeto
+
+### 1. Desenvolvimento Local (Docker Compose)
+Ideal para desenvolvimento rápido e debug da API.
+```bash
+# Sobe a API e o MongoDB automaticamente
+make compose
+```
+📍 Acesse em: `http://localhost:5000`
+
+### 2. Ambiente Kubernetes Local (Kind + Ingress)
+Simula um ambiente de produção com roteamento via Ingress.
+```bash
+# Cria o cluster, instala o Ingress Nginx e o Helm Chart do MongoDB
+make setup-dev
+
+# Aplica os manifestos da aplicação
+kubectl apply -f kubernetes/manifests/
+```
+📍 Teste o roteamento (Ingress):
+```bash
+curl localhost/users -H "Host: api.localhost.com"
+```
+
+---
+
+## 🧪 Qualidade e Testes
+
+O projeto segue práticas rigorosas de testes para garantir a estabilidade.
+```bash
+# Executa a suíte de testes (Pytest + Mongomock)
+make test
+```
+
+---
+
+## 🗺️ Roadmap de Evolução (Próximos Passos)
+
+O projeto está em constante evolução. Os próximos módulos incluem:
+
+- [ ] **Produção com Helm:** Criação de Charts customizados para deploy simplificado.
+- [ ] **IaC com Terraform:** Provisionamento automatizado de VPC e Cluster EKS na AWS.
+- [ ] **Automação com Ansible:** Hardening de instâncias e configuração de workers.
+- [ ] **Cloud Networking:** Integração de **Route 53** com **External DNS** para automação de domínios.
+- [ ] **Observabilidade:** Implementação de stack Prometheus & Grafana.
+
+---
+
+## 📖 Endpoints da API
+
+| Método | Rota | Descrição |
+| :--- | :--- | :--- |
+| `GET` | `/users` | Lista todos os usuários. |
+| `GET` | `/user/<cpf>` | Detalhes de um usuário específico. |
+| `POST` | `/user` | Cadastro de novo usuário. |
+| `PATCH` | `/user` | Atualização de dados cadastrais. |
+| `DELETE` | `/user/<cpf>` | Remoção de usuário do sistema. |
+| `GET` | `/health` | Status de saúde da aplicação. |
+
+---
+
+## 🤝 Contato
+
+Desenvolvido por **Patrick Alves** - *Focado em soluções escalonáveis e cultura DevOps.*
