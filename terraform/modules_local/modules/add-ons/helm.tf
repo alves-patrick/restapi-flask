@@ -36,6 +36,29 @@ resource "helm_release" "eks_helm_controller" {
   }
 }
 
+resource "helm_release" "external_dns" {
+  name       = "external-dns"
+  repository = "https://kubernetes-sigs.github.io/external-dns/"
+  chart      = "external-dns"
+  version    = "1.13.0"
+  namespace  = "kube-system"
+
+  set {
+    name  = "serviceAccount.create"
+    value = "false"
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = "external-dns"
+  }
+
+  set {
+    name  = "policy"
+    value = "sync"
+  }
+}
+
 resource "helm_release" "sealed_secrets" {
   name       = "sealed-secrets"
   repository = "https://bitnami-labs.github.io/sealed-secrets"
@@ -48,3 +71,10 @@ resource "helm_release" "sealed_secrets" {
     value = "sealed-secrets-controller"
   }
 }
+
+resource "aws_eks_addon" "ebs_csi_driver" {
+  cluster_name             = var.cluster_name
+  addon_name               = "aws-ebs-csi-driver"
+  service_account_role_arn = aws_iam_role.ebs_csi_driver_role.arn
+}
+

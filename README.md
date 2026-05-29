@@ -1,70 +1,93 @@
 # 🚀 Cloud Native & Hybrid Infrastructure: Flask REST API
 
-Este projeto é um laboratório avançado de engenharia de software e infraestrutura moderna.
+Este projeto é um laboratório avançado de engenharia de software e infraestrutura moderna. Ele simula um ciclo de vida real de uma aplicação Cloud Native, focando em segurança, automação e práticas de mercado (GitOps e IaC).
 
 ---
 
-## 🏗️ Arquitetura Híbrida
+## 🏗️ Arquitetura Híbrida e Flexível
 
-O grande diferencial deste projeto é a flexibilidade de execução. Através de um **Makefile inteligente**, o desenvolvedor pode alternar entre ambientes com um único comando:
+O grande diferencial deste projeto é a paridade entre desenvolvimento e produção. Através de um **Makefile inteligente**, é possível alternar entre ambientes com um único comando:
 
-| Ambiente | Orquestração | Banco de Dados | Segurança |
+| Ambiente | Orquestração | Exposição (Ingress) | Segurança |
 | :--- | :--- | :--- | :--- |
-| **Local** | Kubernetes (Kind) | MongoDB (Helm) | Secrets Manuais |
-| **Cloud** | AWS EKS | MongoDB (Helm) | Sealed Secrets (GitOps) |
+| **Local** | Kubernetes (Kind) | Nginx Ingress | Secrets Manuais |
+| **Cloud** | AWS EKS | AWS ALB + External DNS | Sealed Secrets (GitOps) |
 
 ---
 
 ## 🛠️ Stack Tecnológica
 
 - **Backend:** Python 3.14+, Flask, Flask-RESTful
-- **Banco de Dados:** MongoDB, MongoEngine (ODM)
-- **Containerização:** Docker (Multi-stage builds planejado)
+- **Banco de Dados:** MongoDB (Implantado via Helm)
+- **Containerização:** Docker (Alpine base)
 - **Orquestração:** Kubernetes, Helm v3
-- **Infra-as-Code:** Terraform (Módulos Locais)
-- **Segurança:** Bitnami Sealed Secrets (GitOps Ready)
-- **CI/CD:** GitHub Actions (Linter & Testes)
+- **Infra-as-Code (IaC):** Terraform (Módulos Locais)
+- **Segurança e Borda:** Bitnami Sealed Secrets, AWS ACM (TLS/SSL)
+- **CI/CD:** GitHub Actions (OIDC)
 
 ---
 
-## ✨ Funcionalidades Profissionais
+## ✨ Destaques Profissionais (O que os recrutadores buscam)
 
-- **Segurança GitOps:** Credenciais sensíveis são criptografadas com **Sealed Secrets**, permitindo que segredos selados fiquem versionados no GitHub sem riscos.
-- **Helm Charts Customizados:** Refatoração completa para modularização via `values.yaml`, facilitando deploys em múltiplos clusters.
-- **Infraestrutura Otimizada:** Cluster EKS utilizando instâncias `t3.small` e NAT Gateway único, focando em custo/benefício sem perder performance.
-- **Automação via Makefile:** Comandos simplificados para build, push, deploy e manutenção do cluster.
+1. **Gestão de Tráfego e DNS Dinâmico:**
+   - Integração do **AWS Load Balancer Controller** para provisionamento automático de ALBs.
+   - Uso de **External DNS** sincronizado com o AWS Route 53. Ao realizar um deploy, o domínio (`restapi-flask.xyz`) é atualizado automaticamente sem intervenção manual.
+
+2. **Segurança de Borda (Edge Security):**
+   - Tráfego 100% encriptado via HTTPS com certificados gerados automaticamente pelo **AWS ACM** e validados por DNS. Redirecionamento forçado de HTTP para HTTPS diretamente no ALB.
+
+3. **Segurança GitOps (Zero Trust):**
+   - Credenciais de banco de dados criptografadas usando **Sealed Secrets**. Nenhum dado sensível em plain-text no repositório, garantindo um fluxo GitOps seguro.
+
+4. **Infraestrutura Otimizada e Modular:**
+   - Terraform estruturado em módulos (Network, Cluster, Add-ons).
+   - Cluster EKS otimizado com instâncias `t3.small` e NAT Gateway único, demonstrando consciência de **FinOps** e limites arquiteturais (ENIs).
+
+5. **Deploy Dinâmico com Helm:**
+   - Refatoração da aplicação para Helm Charts customizados, permitindo deploys em diferentes ambientes apenas alterando os arquivos `values.yaml`.
 
 ---
 
-## 🚀 Como Executar
+## 🚀 Como Testar a API (via Insomnia/Postman)
 
-### 1. Desenvolvimento Local (Kind)
-O ambiente local simula 100% o ambiente de produção, incluindo Ingress Nginx e o banco de dados via Helm.
-```bash
-# Sobe o cluster local, Ingress, MongoDB e API automaticamente
-make dev
+A API está disponível publicamente com certificado SSL válido.
+**Base URL:** `https://api.restapi-flask.xyz`
+
+**Exemplo de Requisição (Criar Usuário):**
+```http
+POST /users
+Content-Type: application/json
+
+{
+  "name": "Patrick Alves",
+  "cpf": "123.456.789-00",
+  "email": "patrick@example.com"
+}
 ```
 
-### 2. Deploy na Nuvem (AWS EKS)
-Após o provisionamento via Terraform, o deploy é automatizado:
-```bash
-# 1. Faz o push da imagem para o ECR
-make aws-push
+---
 
-# 2. Realiza o deploy no cluster EKS
+## ⚙️ Operação e CI/CD
+
+### Deploy Automatizado via CI/CD (Em breve)
+O pipeline está sendo evoluído para utilizar **GitHub Actions com AWS OIDC**. Isso garante que o runner do GitHub acesse a AWS sem a necessidade de chaves fixas de IAM (Access Keys), seguindo as melhores práticas de segurança de CI/CD.
+
+### Operação Manual Rápida (Makefile)
+```bash
+# Sobe ambiente local completo (Kind + Helm + App)
+make dev
+
+# Deploy na AWS (Build -> Push ECR -> Helm Upgrade)
 make aws-deploy
 ```
 
 ---
 
-## 🧪 Qualidade e Segurança
-
-- **Testes Automatizados:** Suíte de testes com `Pytest` e `Mongomock`.
-- **Análise Estática:** Linter `Flake8` integrado ao workflow.
-- **GitOps:** Uso de `kubeseal` para gerenciamento de chaves mestras e restauração de desastres.
-
----
-
 ## 🤝 Contato
 
-Desenvolvido por **Patrick Alves** - *Focado em soluções Cloud Native e Automação.*
+Desenvolvido por **Patrick Alves**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/patrickalvesdev/)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:patrick.devops@outlook.com)
+
+*Focado em soluções Cloud Native, Automação e DevOps.*

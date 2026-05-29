@@ -13,3 +13,11 @@ output "cluster_name" {
 output "cluster_sg" {
   value = module.eks_cluster.cluster_sg
 }
+
+output "nameservers" {
+  value = module.eks_add_ons.nameservers
+}
+
+output "certificate_arn" {
+  value = module.eks_add_ons.certificate_arn
+}

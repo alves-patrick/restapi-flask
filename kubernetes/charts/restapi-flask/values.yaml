@@ -3,7 +3,7 @@ replicaCount: 1
 appPort: 5000
 
 image:
-  repository: AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/restapi-ecr
+  repository: 142517507342.dkr.ecr.us-east-1.amazonaws.com/restapi-ecr
   pullPolicy: IfNotPresent
   # Overrides a tag padrão (appVersion no Chart.yaml)
   tag: "latest"
@@ -34,4 +34,8 @@ resources:
     memory: 128Mi
 
 ingress:
-  enabled: false 
+  enabled: true
+  host: api.restapi-flask.xyz
+  # O ARN real obtido após o novo apply
+  certificateArn: "arn:aws:acm:us-east-1:142517507342:certificate/19dc9f4e-07d3-48d1-a6fa-f1369a1ca84b"
+ 
