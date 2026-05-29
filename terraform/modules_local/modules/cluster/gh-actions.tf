@@ -73,3 +73,20 @@ resource "aws_iam_role_policy_attachment" "gh_actions_oidc_eks_ro" {
   role       = aws_iam_role.gh_actions_oidc_role.name
   policy_arn = aws_iam_policy.gh_actions_eks_ro.arn
 }
+
+# Permissão para o GitHub Actions gerenciar o Cluster (Kubernetes Admin)
+resource "aws_eks_access_entry" "gh_actions" {
+  cluster_name      = aws_eks_cluster.eks_cluster.name
+  principal_arn     = aws_iam_role.gh_actions_oidc_role.arn
+  type              = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "gh_actions_admin" {
+  cluster_name  = aws_eks_cluster.eks_cluster.name
+  policy_arn    = "arn:aws:iam::aws:policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = aws_iam_role.gh_actions_oidc_role.arn
+
+  access_scope {
+    type = "cluster"
+  }
+}
