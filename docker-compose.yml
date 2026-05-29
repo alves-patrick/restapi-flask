@@ -6,7 +6,7 @@
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
-    ports: # <--- ADICIONE ESTAS DUAS LINHAS!
+    ports:
       - "27017:27017"
     restart: always
 

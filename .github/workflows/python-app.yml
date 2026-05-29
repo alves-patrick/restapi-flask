@@ -25,8 +25,3 @@ jobs:
 
     - name: Run Linter and Tests
       run: make test
-
-    - name: Deploy to heroku 
-      run: make heroku            
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
