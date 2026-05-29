@@ -1,93 +1,70 @@
-# 🚀 Full-Cycle DevOps: Flask REST API & Cloud Infrastructure
+# 🚀 Cloud Native & Hybrid Infrastructure: Flask REST API
 
-Este projeto é um laboratório de engenharia de software e DevOps de alta performance. Ele demonstra o ciclo de vida completo de uma aplicação, desde o desenvolvimento local padronizado com **Docker** até a orquestração escalonável em **Kubernetes**, visando um ambiente de produção resiliente na **AWS**.
+Este projeto é um laboratório avançado de engenharia de software e infraestrutura moderna.
+
+---
+
+## 🏗️ Arquitetura Híbrida
+
+O grande diferencial deste projeto é a flexibilidade de execução. Através de um **Makefile inteligente**, o desenvolvedor pode alternar entre ambientes com um único comando:
+
+| Ambiente | Orquestração | Banco de Dados | Segurança |
+| :--- | :--- | :--- | :--- |
+| **Local** | Kubernetes (Kind) | MongoDB (Helm) | Secrets Manuais |
+| **Cloud** | AWS EKS | MongoDB (Helm) | Sealed Secrets (GitOps) |
 
 ---
 
 ## 🛠️ Stack Tecnológica
 
-| Camada | Tecnologia |
-| :--- | :--- |
-| **Backend** | Python 3.14+, Flask, Flask-RESTful |
-| **Banco de Dados** | MongoDB, MongoEngine (ODM) |
-| **Containerização** | Docker, Docker Compose |
-| **Orquestração** | Kubernetes (Kind), Helm |
-| **Qualidade** | Pytest, Flake8, GitHub Actions |
-| **Roadmap Cloud** | Terraform, Ansible, AWS (EKS, Route 53) |
+- **Backend:** Python 3.14+, Flask, Flask-RESTful
+- **Banco de Dados:** MongoDB, MongoEngine (ODM)
+- **Containerização:** Docker (Multi-stage builds planejado)
+- **Orquestração:** Kubernetes, Helm v3
+- **Infra-as-Code:** Terraform (Módulos Locais)
+- **Segurança:** Bitnami Sealed Secrets (GitOps Ready)
+- **CI/CD:** GitHub Actions (Linter & Testes)
 
 ---
 
-## ✨ Funcionalidades Principais
+## ✨ Funcionalidades Profissionais
 
-- **CRUD Completo de Usuários:** Gerenciamento eficiente com persistência em NoSQL.
-- **Validação de Negócio:** Algoritmo robusto para validação de CPF.
-- **Healthcheck Dinâmico:** Monitoramento de saúde da API e conectividade com o banco.
-- **Arquitetura Escalável:** Preparado para rodar em clusters de alta disponibilidade.
-- **Infra-as-Code (IaC):** Manifestos Kubernetes prontos para Ingress e Service.
+- **Segurança GitOps:** Credenciais sensíveis são criptografadas com **Sealed Secrets**, permitindo que segredos selados fiquem versionados no GitHub sem riscos.
+- **Helm Charts Customizados:** Refatoração completa para modularização via `values.yaml`, facilitando deploys em múltiplos clusters.
+- **Infraestrutura Otimizada:** Cluster EKS utilizando instâncias `t3.small` e NAT Gateway único, focando em custo/benefício sem perder performance.
+- **Automação via Makefile:** Comandos simplificados para build, push, deploy e manutenção do cluster.
 
 ---
 
-## 🚀 Como Executar o Projeto
+## 🚀 Como Executar
 
-### 1. Desenvolvimento Local (Docker Compose)
-Ideal para desenvolvimento rápido e debug da API.
+### 1. Desenvolvimento Local (Kind)
+O ambiente local simula 100% o ambiente de produção, incluindo Ingress Nginx e o banco de dados via Helm.
 ```bash
-# Sobe a API e o MongoDB automaticamente
-make compose
+# Sobe o cluster local, Ingress, MongoDB e API automaticamente
+make dev
 ```
-📍 Acesse em: `http://localhost:5000`
 
-### 2. Ambiente Kubernetes Local (Kind + Ingress)
-Simula um ambiente de produção com roteamento via Ingress.
+### 2. Deploy na Nuvem (AWS EKS)
+Após o provisionamento via Terraform, o deploy é automatizado:
 ```bash
-# Cria o cluster, instala o Ingress Nginx e o Helm Chart do MongoDB
-make setup-dev
+# 1. Faz o push da imagem para o ECR
+make aws-push
 
-# Aplica os manifestos da aplicação
-kubectl apply -f kubernetes/manifests/
-```
-📍 Teste o roteamento (Ingress):
-```bash
-curl localhost/users -H "Host: api.localhost.com"
+# 2. Realiza o deploy no cluster EKS
+make aws-deploy
 ```
 
 ---
 
-## 🧪 Qualidade e Testes
+## 🧪 Qualidade e Segurança
 
-O projeto segue práticas rigorosas de testes para garantir a estabilidade.
-```bash
-# Executa a suíte de testes (Pytest + Mongomock)
-make test
-```
-
----
-
-## 🗺️ Roadmap de Evolução (Próximos Passos)
-
-O projeto está em constante evolução. Os próximos módulos incluem:
-
-- [ ] **Produção com Helm:** Criação de Charts customizados para deploy simplificado.
-- [ ] **IaC com Terraform:** Provisionamento automatizado de VPC e Cluster EKS na AWS.
-- [ ] **Automação com Ansible:** Hardening de instâncias e configuração de workers.
-- [ ] **Cloud Networking:** Integração de **Route 53** com **External DNS** para automação de domínios.
-- [ ] **Observabilidade:** Implementação de stack Prometheus & Grafana.
-
----
-
-## 📖 Endpoints da API
-
-| Método | Rota | Descrição |
-| :--- | :--- | :--- |
-| `GET` | `/users` | Lista todos os usuários. |
-| `GET` | `/user/<cpf>` | Detalhes de um usuário específico. |
-| `POST` | `/user` | Cadastro de novo usuário. |
-| `PATCH` | `/user` | Atualização de dados cadastrais. |
-| `DELETE` | `/user/<cpf>` | Remoção de usuário do sistema. |
-| `GET` | `/health` | Status de saúde da aplicação. |
+- **Testes Automatizados:** Suíte de testes com `Pytest` e `Mongomock`.
+- **Análise Estática:** Linter `Flake8` integrado ao workflow.
+- **GitOps:** Uso de `kubeseal` para gerenciamento de chaves mestras e restauração de desastres.
 
 ---
 
 ## 🤝 Contato
 
-Desenvolvido por **Patrick Alves** - *Focado em soluções escalonáveis e cultura DevOps.*
+Desenvolvido por **Patrick Alves** - *Focado em soluções Cloud Native e Automação.*

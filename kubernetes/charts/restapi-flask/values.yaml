@@ -1,0 +1,37 @@
+# Configurações globais e padrões do Chart
+replicaCount: 1
+appPort: 5000
+
+image:
+  repository: AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/restapi-ecr
+  pullPolicy: IfNotPresent
+  # Overrides a tag padrão (appVersion no Chart.yaml)
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
+
+# Variáveis de ambiente extras
+env:
+  FLASK_ENV: "development"
+  FLASK_HOST: "0.0.0.0"
+
+# Configurações do MongoDB
+mongodb:
+  secretName: mongodb-credentials
+  db: restapi
+  host: mongodb
+  user: root
+
+# Recursos (CPU/Memória) - Recomendado para Portfólio
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+ingress:
+  enabled: false 
