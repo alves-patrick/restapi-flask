@@ -86,7 +86,8 @@ resource "aws_iam_policy" "gh_actions_terraform_state" {
         Effect = "Allow"
         Action = [
           "s3:ListBucket",
-          "s3:GetBucketLocation"
+          "s3:GetBucketLocation",
+          "s3:GetBucketVersioning"
         ]
         Resource = "arn:aws:s3:::restapi-flask-terraform-state-142517507342"
       },
@@ -107,7 +108,7 @@ resource "aws_iam_policy" "gh_actions_terraform_state" {
           "dynamodb:DeleteItem",
           "dynamodb:DescribeTable"
         ]
-        Resource = "arn:aws:aws:dynamodb:us-east-1:142517507342:table/restapi-flask-terraform-lock"
+        Resource = "arn:aws:dynamodb:us-east-1:142517507342:table/restapi-flask-terraform-lock"
       }
     ]
   })
