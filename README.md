@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png" alt="Kubernetes Logo" width="80"/>
   <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" width="80"/>
   <img src="https://www.vectorlogo.zone/logos/terraformio/terraformio-ar21.svg" alt="Terraform Logo" width="120"/>
-  <img src="https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/assets/prometheus_logo-cb55bb1aa9de2452479679673da0a9f5383922d56a7605d3b6f932e652417646.png" alt="Prometheus Logo" width="60"/>
+  <img src="https://www.vectorlogo.zone/logos/prometheusio/prometheusio-icon.svg" alt="Prometheus Logo" width="60"/>
   <img src="https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg" alt="Grafana Logo" width="60"/>
   
   # 🚀 Enterprise-Grade Cloud-Native Ecosystem
