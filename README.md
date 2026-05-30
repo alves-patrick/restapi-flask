@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png" alt="Kubernetes Logo" width="100"/>
   <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" width="100"/>
-  <img src="https://raw.githubusercontent.com/hashicorp/terraform-website/master/public/img/logo-terraform-main.svg" alt="Terraform Logo" width="100"/>
+  <img src="https://www.vectorlogo.zone/logos/terraformio/terraformio-ar21.svg" alt="Terraform Logo" width="150"/>
   
   # 🚀 Enterprise Cloud-Native Infrastructure
   **Flask REST API on AWS EKS with GitOps, CI/CD, and Makefile Automation**

@@ -12,7 +12,8 @@ help:
 	@echo "  make dev           - Atalho para setup-dev + deploy-dev"
 	@echo "  --- CLOUD (AWS EKS) ---"
 	@echo "  make aws-push      - Build e Push da imagem para o ECR"
-	@echo "  make aws-deploy    - Aplica os manifestos no EKS com imagem da AWS"
+	@echo "  make aws-up        - Sobe TODA a infra (Terraform) e faz o Deploy (Helm)"
+	@echo "  make aws-down      - Destrói apenas o que é caro (EKS/Nodes/ALB) para economizar"
 
 test:
 	flake8 . --exclude .venv --max-line-length=88
@@ -57,11 +58,26 @@ deploy-dev:
 dev: setup-dev deploy-dev
 
 aws-push:
-	@aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $(shell echo $(ECR_IMAGE) | cut -d: -f1)
+	@aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.us-east-1.amazonaws.com
 	@docker build -t $(ECR_IMAGE) .
 	@docker push $(ECR_IMAGE)
 
-aws-deploy:
-	@sed -i 's|image:.*|image: $(ECR_IMAGE)|' kubernetes/manifests/20-deployment.yaml
-	@kubectl apply -f kubernetes/manifests
-	@kubectl rollout restart deploy restapi-flask
+aws-up:
+	@echo "🚀 Iniciando provisionamento da Infraestrutura..."
+	@cd terraform && terraform apply -auto-approve
+	@echo "✅ Infraestrutura pronta. Sincronizando credenciais..."
+	@aws eks update-kubeconfig --region us-east-1 --name restapi-cluster
+	@echo "📦 Fazendo push da imagem..."
+	@make aws-push
+	@echo "🚢 Fazendo deploy via Helm..."
+	@helm upgrade --install mongodb kubernetes/charts/mongodb --set auth.rootPassword="root" --set persistence.storageClass="gp2"
+	@helm upgrade --install restapi kubernetes/charts/restapi-flask
+	@echo "✨ TUDO PRONTO! Acesse: https://api.restapi-flask.xyz/users"
+
+aws-down:
+	@echo "🛑 Destruindo recursos caros (EKS, Nodes, ALB)..."
+	@cd terraform && terraform destroy -auto-approve \
+		-target=module.kubernetes.module.eks_managed_node_group \
+		-target=module.kubernetes.module.eks_cluster \
+		-target=module.kubernetes.module.eks_add_ons.helm_release.eks_helm_controller
+	@echo "📉 Economia ativada! VPC e DNS mantidos."

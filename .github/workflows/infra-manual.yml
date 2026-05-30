@@ -1,0 +1,63 @@
+name: 🛠️ Infra Control - Manual Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Selecione a ação para a infraestrutura'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
+
+env:
+  AWS_REGION: us-east-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    name: Terraform ${{ github.event.inputs.action }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/restapi-gh-actions-oidc-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
+
+      - name: Terraform Init
+        run: cd terraform && terraform init
+
+      - name: Terraform Action
+        run: |
+          cd terraform
+          if [ "${{ github.event.inputs.action }}" == "apply" ]; then
+            terraform apply -auto-approve
+          else
+            # Destruição econômica (EKS e Nodes apenas)
+            terraform destroy -auto-approve \
+              -target=module.kubernetes.module.eks_managed_node_group \
+              -target=module.kubernetes.module.eks_cluster \
+              -target=module.kubernetes.module.eks_add_ons.helm_release.eks_helm_controller
+          fi
+
+      - name: Post-Apply Update (Only on Apply)
+        if: github.event.inputs.action == 'apply'
+        run: |
+          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name restapi-cluster
+          helm upgrade --install mongodb kubernetes/charts/mongodb --set auth.rootPassword="root" --set persistence.storageClass="gp2"
+          helm upgrade --install restapi kubernetes/charts/restapi-flask \
+            --set ingress.certificateArn=arn:aws:acm:${{ env.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:certificate/19dc9f4e-07d3-48d1-a6fa-f1369a1ca84b
