@@ -74,36 +74,15 @@ resource "aws_iam_role_policy_attachment" "gh_actions_oidc_eks_ro" {
   policy_arn = aws_iam_policy.gh_actions_eks_ro.arn
 }
 
-# Permissões definitivas para o Backend do Terraform (S3 e DynamoDB)
-resource "aws_iam_policy" "gh_actions_terraform_state" {
-  name        = "${var.project_name}-gh-actions-tf-state"
-  description = "Permissões totais limitadas ao bucket e tabela do Terraform State"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "FullAccessToStateBucket"
-        Effect = "Allow"
-        Action = ["s3:*"]
-        Resource = [
-          "arn:aws:s3:::restapi-flask-terraform-state-142517507342",
-          "arn:aws:s3:::restapi-flask-terraform-state-142517507342/*"
-        ]
-      },
-      {
-        Sid    = "FullAccessToLockTable"
-        Effect = "Allow"
-        Action = ["dynamodb:*"]
-        Resource = "arn:aws:dynamodb:us-east-1:142517507342:table/restapi-flask-terraform-lock"
-      }
-    ]
-  })
+# Permissões de Administrador de S3 e DynamoDB para garantir o funcionamento do Backend
+resource "aws_iam_role_policy_attachment" "gh_actions_s3_full" {
+  role       = aws_iam_role.gh_actions_oidc_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "gh_actions_oidc_tf_state" {
+resource "aws_iam_role_policy_attachment" "gh_actions_dynamo_full" {
   role       = aws_iam_role.gh_actions_oidc_role.name
-  policy_arn = aws_iam_policy.gh_actions_terraform_state.arn
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
 
 # Permissão para o GitHub Actions gerenciar o Cluster (Kubernetes Admin)
