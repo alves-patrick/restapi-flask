@@ -1,115 +1,109 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png" alt="Kubernetes Logo" width="100"/>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" width="100"/>
-  <img src="https://www.vectorlogo.zone/logos/terraformio/terraformio-ar21.svg" alt="Terraform Logo" width="150"/>
+  <img src="https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png" alt="Kubernetes Logo" width="80"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" width="80"/>
+  <img src="https://www.vectorlogo.zone/logos/terraformio/terraformio-ar21.svg" alt="Terraform Logo" width="120"/>
+  <img src="https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/assets/prometheus_logo-cb55bb1aa9de2452479679673da0a9f5383922d56a7605d3b6f932e652417646.png" alt="Prometheus Logo" width="60"/>
+  <img src="https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg" alt="Grafana Logo" width="60"/>
   
-  # 🚀 Enterprise Cloud-Native Infrastructure
-  **Flask REST API | AWS EKS | GitOps | FinOps | CI/CD | IaC**
+  # 🚀 Enterprise-Grade Cloud-Native Ecosystem
+  **Hybrid Infrastructure | EKS | GitOps | CI/CD | Observability | FinOps**
   
-  [![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/alves-patrick/restapi-flask/actions)
-  [![Terraform](https://img.shields.io/badge/IaC-Terraform_v5.x-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)](#)
-  [![Kubernetes](https://img.shields.io/badge/Orchestration-EKS_v1.35-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](#)
+  *Um laboratório avançado de Engenharia de Plataforma e SRE, focado em automação de ponta a ponta e eficiência operacional na AWS.*
+
+  [![CI/CD Pipeline](https://img.shields.io/badge/Pipeline-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/alves-patrick/restapi-flask/actions)
+  [![Infrastructure](https://img.shields.io/badge/IaC-Terraform_v5.x-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)](#)
+  [![Orchestration](https://img.shields.io/badge/Cluster-EKS_v1.35-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](#)
+  [![Observability](https://img.shields.io/badge/Monitoring-Prometheus_%26_Grafana-orange?style=for-the-badge&logo=grafana&logoColor=white)](#)
   [![Security](https://img.shields.io/badge/Security-OIDC_%7C_SealedSecrets-success?style=for-the-badge)](#)
 </div>
 
 ---
 
-## 🎯 Visão Geral do Projeto
+## 🎯 Visão Estratégica do Projeto
 
-Este repositório é um **Laboratório Completo de SRE e Engenharia de Plataforma**. Muito além de uma simples aplicação, este projeto simula um ecossistema corporativo real com foco em quatro pilares fundamentais: **Segurança (Zero-Trust)**, **Eficiência de Custos (FinOps)**, **Developer Experience (DX)** e **Automação (Self-Service)**.
+Este projeto transcende a simples entrega de uma API. Ele representa a construção de uma **Plataforma de Dados Interna (IDP)** robusta, desenhada para suportar o ciclo de vida completo de uma aplicação moderna. O foco central foi garantir que a infraestrutura seja **segura**, **observável** e, acima de tudo, **financeiramente inteligente**.
 
-A aplicação (API RESTful) roda em um cluster **AWS EKS** multi-node, roteada via **AWS ALB**, com criptografia ponta-a-ponta via **ACM (HTTPS)** e resolução dinâmica via **Route 53**.
-
-🌐 **Live Demo:** [https://api.restapi-flask.xyz/users](https://api.restapi-flask.xyz/users)
-
----
-
-## 🏗️ Arquitetura e Trade-offs (Por que fiz assim?)
-
-Como engenheiro, cada decisão técnica teve um propósito claro de negócio:
-
-### 1. Segurança e Redução de Custos: Sealed Secrets vs. AWS KMS
-*   **A Decisão:** Utilizar o **Bitnami Sealed Secrets** no lugar do serviço gerenciado AWS KMS.
-*   **O Motivo (FinOps):** O AWS KMS possui custos recorrentes de chamadas de API e gera *Vendor Lock-in*. O Sealed Secrets oferece criptografia assimétrica open-source, permitindo um fluxo **100% GitOps** (segredos no Git sem exposição) a custo zero, ideal para arquiteturas enxutas e startups.
-
-### 2. Persistência In-Cluster: MongoDB via Helm
-*   **A Decisão:** Instalar o MongoDB diretamente no EKS com volumes EBS (via AWS EBS CSI Driver) em vez de usar AWS DocumentDB.
-*   **O Motivo (FinOps):** Serviços de banco de dados gerenciados exigem alto investimento inicial (mínimo de ~$50/mês). Esta abordagem utiliza os recursos excedentes dos nós `t3.small`, cortando drasticamente o custo de licenciamento, mantendo baixa latência (rede interna).
-
-### 3. Autenticação Zero-Trust (OIDC + Access Entries)
-*   **A Decisão:** Abandonar chaves fixas (Access Keys) e o frágil `aws-auth`.
-*   **O Motivo (Segurança):** O CI/CD utiliza **OIDC** para assumir permissões temporárias, integradas diretamente às modernas **EKS Access Entries** do Terraform v5.x. Segurança de nível bancário, sem gambiarras.
+### 🔗 Endpoints Públicos (Produção)
+*   🚀 **API Flask (HTTPS):** [https://api.restapi-flask.xyz/users](https://api.restapi-flask.xyz/users)
+*   📊 **Grafana Dashboard:** [https://grafana.restapi-flask.xyz](https://grafana.restapi-flask.xyz)
 
 ---
 
-## 💻 Developer Experience (DX): O Poder do Makefile
+## 🏗️ Pilares de Engenharia & Decisões Técnicas
 
-Tempo é o recurso mais caro de um desenvolvedor. O projeto foi projetado com a filosofia **"Local-First"**, garantindo que a nuvem seja apenas um espelho do seu laptop.
+### 1. FinOps & Eficiência de Custos (O diferencial comercial)
+Em vez de utilizar serviços gerenciados proprietários que oneram o orçamento, optei por uma estratégia de **In-Cluster Resources**:
+*   **MongoDB via Helm:** Implantado com volumes persistentes **AWS EBS** (via EBS CSI Driver). Isso evita o custo inicial de ~$50/mês do AWS DocumentDB.
+*   **Sealed Secrets vs. AWS KMS:** Implementei o Bitnami Sealed Secrets para gerenciar credenciais via GitOps. O KMS gera custos por cada chave e chamada de API; o Sealed Secrets oferece o mesmo nível de segurança assimétrica a **custo zero** e sem *Vendor Lock-in*.
 
-O `Makefile` abstrai a complexidade operacional, transformando horas de digitação em comandos de uma linha:
+### 2. Segurança Progressiva (Zero-Trust)
+*   **Autenticação OIDC:** O GitHub Actions não utiliza chaves fixas. Ele assume permissões temporárias na AWS via tokens de confiança.
+*   **EKS Access Entries:** Migração do legado `aws-auth` para o modelo moderno de entradas de acesso da AWS, garantindo que o gerenciamento de permissões do cluster seja 100% via código (IaC).
 
-| Comando DX | O que ele faz (A Mágica) | Por que economiza tempo? |
+### 3. Observabilidade Proativa
+*   **Stack Prometheus & Grafana:** Implementação da `kube-prometheus-stack` para monitoramento de saúde.
+*   **Capacidade Técnica:** Configuração de Dashboards automáticos para visualização de consumo de CPU/RAM por Namespace e Nodes, permitindo uma resposta rápida a incidentes de performance.
+
+---
+
+## 🛠️ Automação & DX (Developer Experience)
+
+O projeto foi construído para que o desenvolvedor gaste tempo **codando**, não operando. O **Makefile** age como a fachada de comando único:
+
+| Comando | Descrição Técnica | Impacto no Negócio |
 | :--- | :--- | :--- |
-| `make dev` | Sobe um cluster Kind local completo (Ingress + Mongo + App). | Validação imediata de código sem depender ou esperar pela infra da AWS. |
-| `make test` | Executa Linter (`flake8`) e Unit Tests (`pytest`). | Feedback loop rápido na máquina antes do commit. |
-| `make aws-up` | **Botão Vermelho:** Roda o Terraform completo e faz o deploy do Helm na AWS. | Um comando para transformar o repositório em um site público HTTPS. |
-| `make aws-down` | **FinOps (Modo Econômico):** Destrói apenas os nós e o EKS. | Evita gastos desnecessários enquanto mantém DNS, IPs e ECR intactos. |
+| `make dev` | Provisiona cluster Kind local, Ingress Nginx, MongoDB e a App. | **Aceleração:** Ambientes de dev idênticos à prod em segundos. |
+| `make test` | Roda testes unitários com **Pytest** e Linting com **Flake8**. | **Qualidade:** Garante que o código segue os padrões antes do commit. |
+| `make aws-up` | Provisiona VPC, EKS, Route 53, ACM e faz o deploy total. | **Agilidade:** Infraestrutura de produção pronta em um comando. |
+| `make aws-down` | **Economic Teardown:** Destrói apenas os recursos caros (EKS/Nodes/ALB). | **Economia:** Mantém DNS e Rede ativos, reduzindo custos em 95%. |
 
 ---
 
-## ⚙️ O Painel "Self-Service" (GitHub Actions)
+## ⚙️ CI/CD: Esteira de Automação "Self-Service"
 
-A automação atingiu o nível **SRE Self-Service**. O repositório possui dois robôs principais na aba *Actions*:
+O repositório utiliza o GitHub Actions para orquestrar dois fluxos críticos:
 
-### 1. CI/CD Unificado (Continuous Deployment)
-*   **Strict Quality Gate:** A cada `git push`, o robô executa os testes unitários. O deploy na AWS **só ocorre se (e somente se)** os testes passarem.
-*   **Zero Downtime:** Faz o build, envia para o ECR e atualiza o Kubernetes via Helm sem que o site saia do ar.
+### A. CI/CD Unificado (Continuous Deployment)
+Cada `git push` na branch `main` dispara um fluxo inteligente:
+1.  **Gate de Qualidade:** O robô testa e analisa o código. Se falhar, o deploy é bloqueado.
+2.  **Build Imutável:** Imagem Docker construída, tagueada com o SHA do commit e enviada ao Amazon ECR.
+3.  **Deployment Atômico:** Atualização do cluster EKS via Helm com **Zero Downtime**.
 
-### 2. Controle Remoto de Infraestrutura (FinOps)
-Graças ao uso de **Remote State (S3 + DynamoDB Lock)**, o Terraform tem memória compartilhada. 
-*   **Workflow "Infra Control":** Através de botões manuais na UI do GitHub (`workflow_dispatch`), qualquer pessoa autorizada pode clicar em **`apply`** (ligar toda a infra) ou **`destroy`** (desligar apenas os recursos caros, mantendo o DNS ativo), diretamente pelo celular.
+### B. Infra-as-Code Manual Triggers (Controle Total)
+Graças ao **Terraform Remote State (S3 + DynamoDB Lock)**, o painel do GitHub possui botões para:
+*   🚀 **Apply:** Ligar a infraestrutura completa remotamente.
+*   🛑 **Destroy:** Desligar os recursos caros para preservar créditos da AWS.
 
 ---
 
-## 🔌 Documentação da API (REST Endpoints)
+## 🔌 Documentação da API (RESTful)
 
-A API gerencia usuários com validação rigorosa (incluindo algoritmo de validação de CPF).
+A API gerencia um cadastro de usuários com persistência em banco de dados e validações matemáticas de documentos.
 
-### **Listar Usuários**
-*   **GET** `/users`
-*   *Retorna a lista completa de usuários (JSON).*
-
-### **Criar Usuário**
-*   **POST** `/user`
-*   **Payload:**
+### Endpoints Disponíveis:
+*   **GET `/users`**: Lista todos os usuários cadastrados.
+*   **POST `/user`**: Cria um novo usuário.
     ```json
     {
-      "first_name": "Patrick",
-      "last_name": "Alves",
-      "cpf": "123.456.789-00",
-      "email": "patrick.devops@outlook.com",
+      "first_name": "Patrick", "last_name": "Alves",
+      "cpf": "123.456.789-00", "email": "patrick.devops@outlook.com",
       "birth_date": "1990-01-01"
     }
     ```
-
-### **Atualizar Usuário**
-*   **PATCH** `/user`
-*   *Atualiza dados baseado no CPF fornecido.*
-
-### **Remover Usuário**
-*   **DELETE** `/user/<string:cpf>`
-*   *Exclusão real do registro persistido no MongoDB.*
+*   **PATCH `/user`**: Atualiza dados de um usuário existente via CPF.
+*   **DELETE `/user/<cpf>`**: Remove um registro permanentemente.
 
 ---
 
 ## 🤝 Contato
 
+Desenvolvido por **Patrick Alves** - *Focado em soluções de Alta Disponibilidade, Automação e Cloud Computing.*
 
 <div align="left">
   <a href="https://www.linkedin.com/in/patrickalvesdev/" target="_blank">
-    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" height="30"/>
   </a>
   <a href="mailto:patrick.devops@outlook.com">
-    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
+    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" height="30"/>
   </a>
 </div>

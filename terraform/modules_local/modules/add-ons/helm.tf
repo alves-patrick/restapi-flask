@@ -78,3 +78,31 @@ resource "aws_eks_addon" "ebs_csi_driver" {
   service_account_role_arn = aws_iam_role.ebs_csi_driver_role.arn
 }
 
+resource "helm_release" "prometheus" {
+  name       = "prometheus"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = "45.7.1"
+  namespace  = "monitoring"
+  create_namespace = true
+
+  values = [
+    yamlencode({
+      grafana = {
+        ingress = {
+          enabled          = true
+          ingressClassName = "alb"
+          hosts            = ["grafana.restapi-flask.xyz"]
+          annotations = {
+            "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
+            "alb.ingress.kubernetes.io/target-type"      = "ip"
+            "alb.ingress.kubernetes.io/listen-ports"     = "[{\"HTTP\": 80}, {\"HTTPS\": 443}]"
+            "alb.ingress.kubernetes.io/ssl-redirect"     = "443"
+            "alb.ingress.kubernetes.io/certificate-arn" = aws_acm_certificate.cert.arn
+          }
+        }
+      }
+    })
+  ]
+}
+
