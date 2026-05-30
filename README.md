@@ -2,7 +2,6 @@
   <img src="https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png" alt="Kubernetes Logo" width="100"/>
   <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" width="100"/>
   <img src="https://www.vectorlogo.zone/logos/terraformio/terraformio-ar21.svg" alt="Terraform Logo" width="150"/>
-  <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Actions Logo" width="100"/>
   
   # 🚀 Enterprise Cloud-Native Infrastructure
   **Flask REST API | AWS EKS | GitOps | FinOps | CI/CD | IaC**
@@ -105,7 +104,6 @@ A API gerencia usuários com validação rigorosa (incluindo algoritmo de valida
 
 ## 🤝 Contato
 
-Este laboratório é a prova viva de que entendo não apenas os comandos, mas o *impacto comercial* da infraestrutura em nuvem.
 
 <div align="left">
   <a href="https://www.linkedin.com/in/patrickalvesdev/" target="_blank">
