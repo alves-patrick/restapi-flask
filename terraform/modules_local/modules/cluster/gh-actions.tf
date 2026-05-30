@@ -6,8 +6,11 @@ resource "aws_iam_openid_connect_provider" "gh_actions_oidc" {
   client_id_list = [
     "sts.amazonaws.com"
   ]
-  thumbprint_list = data.tls_certificate.gh_actions_tls_certificate.certificates[*].sha1_fingerprint
-  url             = data.tls_certificate.gh_actions_tls_certificate.url
+  thumbprint_list = [
+    "6938fd4d98bab03faadb97b34396831e3780aea1",
+    "1b511673f4096a130104060892965421d5557358"
+  ]
+  url = "https://token.actions.githubusercontent.com"
   tags = merge(
     var.tags,
     {
@@ -30,6 +33,9 @@ resource "aws_iam_role" "gh_actions_oidc_role" {
             },
             "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {
+                "StringEquals": {
+                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                },
                 "StringLike": {
                     "token.actions.githubusercontent.com:sub": "repo:alves-patrick/restapi-flask:*"
                 }
