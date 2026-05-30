@@ -39,29 +39,6 @@ resource "aws_iam_role" "gh_actions_oidc_role" {
 }
 EOF
 
-  # Política Inline para acesso total ao Backend (S3 e DynamoDB)
-  inline_policy {
-    name = "TerraformBackendAccess"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Action   = ["s3:*"]
-          Effect   = "Allow"
-          Resource = [
-            "arn:aws:s3:::restapi-flask-terraform-state-142517507342",
-            "arn:aws:s3:::restapi-flask-terraform-state-142517507342/*"
-          ]
-        },
-        {
-          Action   = ["dynamodb:*"]
-          Effect   = "Allow"
-          Resource = "arn:aws:dynamodb:us-east-1:142517507342:table/restapi-flask-terraform-lock"
-        }
-      ]
-    })
-  }
-
   tags = merge(
     var.tags,
     {
@@ -70,31 +47,10 @@ EOF
   )
 }
 
-resource "aws_iam_role_policy_attachment" "gh_actions_oidc_ecr_full" {
+# Permissão total de administrador para que o Terraform consiga gerenciar toda a infra
+resource "aws_iam_role_policy_attachment" "gh_actions_admin_access" {
   role       = aws_iam_role.gh_actions_oidc_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
-}
-
-resource "aws_iam_policy" "gh_actions_eks_ro" {
-  name        = "${var.project_name}-eks-ro"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "eks:DescribeCluster",
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "gh_actions_oidc_eks_ro" {
-  role       = aws_iam_role.gh_actions_oidc_role.name
-  policy_arn = aws_iam_policy.gh_actions_eks_ro.arn
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
 # Permissão para o GitHub Actions gerenciar o Cluster (Kubernetes Admin)
