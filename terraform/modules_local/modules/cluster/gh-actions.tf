@@ -74,45 +74,27 @@ resource "aws_iam_role_policy_attachment" "gh_actions_oidc_eks_ro" {
   policy_arn = aws_iam_policy.gh_actions_eks_ro.arn
 }
 
-# Permissões para o GitHub Actions ler/escrever o estado do Terraform no S3 e DynamoDB
+# Permissões definitivas para o Backend do Terraform (S3 e DynamoDB)
 resource "aws_iam_policy" "gh_actions_terraform_state" {
   name        = "${var.project_name}-gh-actions-tf-state"
-  description = "Permite que o GitHub Actions gerencie o estado do Terraform no S3 e DynamoDB"
+  description = "Permissões totais limitadas ao bucket e tabela do Terraform State"
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "AllowS3Backend"
+        Sid    = "FullAccessToStateBucket"
         Effect = "Allow"
-        Action = [
-          "s3:ListBucket",
-          "s3:GetBucketLocation",
-          "s3:GetBucketVersioning",
-          "s3:GetEncryptionConfiguration",
-          "s3:GetBucketPublicAccessBlock"
+        Action = ["s3:*"]
+        Resource = [
+          "arn:aws:s3:::restapi-flask-terraform-state-142517507342",
+          "arn:aws:s3:::restapi-flask-terraform-state-142517507342/*"
         ]
-        Resource = "arn:aws:s3:::restapi-flask-terraform-state-142517507342"
       },
       {
-        Sid    = "AllowS3StateFile"
+        Sid    = "FullAccessToLockTable"
         Effect = "Allow"
-        Action = [
-          "s3:PutObject",
-          "s3:GetObject",
-          "s3:DeleteObject"
-        ]
-        Resource = "arn:aws:s3:::restapi-flask-terraform-state-142517507342/*"
-      },
-      {
-        Sid    = "AllowDynamoLock"
-        Effect = "Allow"
-        Action = [
-          "dynamodb:DescribeTable",
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:DeleteItem"
-        ]
+        Action = ["dynamodb:*"]
         Resource = "arn:aws:dynamodb:us-east-1:142517507342:table/restapi-flask-terraform-lock"
       }
     ]
