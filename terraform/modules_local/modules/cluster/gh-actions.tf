@@ -83,15 +83,19 @@ resource "aws_iam_policy" "gh_actions_terraform_state" {
     Version = "2012-10-17"
     Statement = [
       {
+        Sid    = "AllowS3Backend"
         Effect = "Allow"
         Action = [
           "s3:ListBucket",
           "s3:GetBucketLocation",
-          "s3:GetBucketVersioning"
+          "s3:GetBucketVersioning",
+          "s3:GetEncryptionConfiguration",
+          "s3:GetBucketPublicAccessBlock"
         ]
         Resource = "arn:aws:s3:::restapi-flask-terraform-state-142517507342"
       },
       {
+        Sid    = "AllowS3StateFile"
         Effect = "Allow"
         Action = [
           "s3:PutObject",
@@ -101,12 +105,13 @@ resource "aws_iam_policy" "gh_actions_terraform_state" {
         Resource = "arn:aws:s3:::restapi-flask-terraform-state-142517507342/*"
       },
       {
+        Sid    = "AllowDynamoLock"
         Effect = "Allow"
         Action = [
-          "dynamodb:PutItem",
+          "dynamodb:DescribeTable",
           "dynamodb:GetItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:DescribeTable"
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem"
         ]
         Resource = "arn:aws:dynamodb:us-east-1:142517507342:table/restapi-flask-terraform-lock"
       }
