@@ -83,7 +83,7 @@ resource "aws_eks_access_entry" "gh_actions" {
 
 resource "aws_eks_access_policy_association" "gh_actions_admin" {
   cluster_name  = aws_eks_cluster.eks_cluster.name
-  policy_arn    = "arn:aws:iam::aws:policy/AmazonEKSClusterAdminPolicy"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   principal_arn = aws_iam_role.gh_actions_oidc_role.arn
 
   access_scope {
