@@ -19,6 +19,14 @@
 
 ---
 
+## 🏗️ Arquitetura da Solução
+
+![Arquitetura do Projeto](docs/images/arquitetura-projeto.png)
+
+*Diagrama detalhado da infraestrutura automatizada na AWS, integrando práticas de GitOps, Segurança e Observabilidade.*
+
+---
+
 ## 🎯 Visão Estratégica do Projeto
 
 Este projeto transcende a simples entrega de uma API. Ele representa a construção de uma **Plataforma de Dados Interna (IDP)** robusta, desenhada para suportar o ciclo de vida completo de uma aplicação moderna. O foco central foi garantir que a infraestrutura seja **segura**, **observável** e, acima de tudo, **financeiramente inteligente**.

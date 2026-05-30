@@ -45,6 +45,8 @@ EOF
       Name = "${var.project_name}-gh-actions-oidc-role"
     }
   )
+
+  max_session_duration = 43200
 }
 
 # Permissão total de administrador para que o Terraform consiga gerenciar toda a infra
