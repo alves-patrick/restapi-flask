@@ -74,6 +74,50 @@ resource "aws_iam_role_policy_attachment" "gh_actions_oidc_eks_ro" {
   policy_arn = aws_iam_policy.gh_actions_eks_ro.arn
 }
 
+# Permissões para o GitHub Actions ler/escrever o estado do Terraform no S3 e DynamoDB
+resource "aws_iam_policy" "gh_actions_terraform_state" {
+  name        = "${var.project_name}-gh-actions-tf-state"
+  description = "Permite que o GitHub Actions gerencie o estado do Terraform no S3 e DynamoDB"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket",
+          "s3:GetBucketLocation"
+        ]
+        Resource = "arn:aws:s3:::restapi-flask-terraform-state-142517507342"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+        ]
+        Resource = "arn:aws:s3:::restapi-flask-terraform-state-142517507342/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:DescribeTable"
+        ]
+        Resource = "arn:aws:aws:dynamodb:us-east-1:142517507342:table/restapi-flask-terraform-lock"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "gh_actions_oidc_tf_state" {
+  role       = aws_iam_role.gh_actions_oidc_role.name
+  policy_arn = aws_iam_policy.gh_actions_terraform_state.arn
+}
+
 # Permissão para o GitHub Actions gerenciar o Cluster (Kubernetes Admin)
 resource "aws_eks_access_entry" "gh_actions" {
   cluster_name      = aws_eks_cluster.eks_cluster.name
